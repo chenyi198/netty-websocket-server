@@ -43,6 +43,6 @@ public class WebSocketNettyServer {
 websocket通道的建立过程包含由HTTP协议消息切换为WebSocket协议消息过程，
 服务端要对客户端第一次发起的HTTP#Upgrade协议升级请求回复HTTP#Switching Protocols协议切换响应，
 响应完成后通道即建立。
-WebSocket在协议层面规定了由客户端实现了TCP层面的链接保活机制，链接保活由客户端维护，
-也即WebSocket协议只在TCP传输层实现了链路的保活。
+在WebSocket中由客户端实现了TCP层面的链接保活机制，链接保活由客户端维护完成，
+客户端通过定时发送TCP#Keepalive包，服务端响应TCP#Keepalive ACK包来实现链路保活。
 ```
