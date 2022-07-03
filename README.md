@@ -1,8 +1,9 @@
 ##### A netty based WebSocket Server.
 ```
 一个基于Netty的通用websocket server端程序。
-基于Netty的socket通信程序可设计出清晰的线程模型，利用Netty中ChannelHandler在初始化时可绑定线程组的机制，可以自然而然地实现IO事件处理与核心业务逻辑处理线程池隔离。
-同时，本程序运用Spring IOC机制，实现websocketEndpoint的收集及dispatcher请求分发器功能。```
+基于Netty的socket通信程序可设计出清晰的线程模型，利用Netty中ChannelHandler在初始化时可绑定线程组的机制，
+可以自然而然地实现IO事件处理与核心业务逻辑处理线程池隔离。
+同时，本程序运用Spring IOC机制，实现websocketEndpoint的收集及dispatcher请求分发器功能。
 ```
 ##### 实现功能
 
@@ -42,5 +43,6 @@ public class WebSocketNettyServer {
 websocket通道的建立过程包含由HTTP协议消息切换为WebSocket协议消息过程，
 服务端要对客户端第一次发起的HTTP#Upgrade协议升级请求回复HTTP#Switching Protocols协议切换响应，
 响应完成后通道即建立。
-客户端已实现了TCP层面的链接保活机制，链接保活由客户端维护。
+WebSocket在协议层面规定了由客户端实现了TCP层面的链接保活机制，链接保活由客户端维护，
+也即WebSocket协议只在TCP传输层实现了链路的保活。
 ```
