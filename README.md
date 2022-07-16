@@ -1,4 +1,4 @@
-### A netty based WebSocket Server.
+### A demo of netty based WebSocket Server.
 ```
 一个基于Netty的通用websocket server端程序。
 基于Netty的socket通信程序可设计出清晰的线程模型，利用Netty中ChannelHandler在初始化时可绑定线程组的机制，
@@ -21,6 +21,29 @@
 * 4）client: TCP[Keep-Alive] ---> server:TCP[Keep-Alive ACK]，客户端主动发起TCP层面链接保活
 
 #### 立即使用
+接口声明
+```java
+import lombok.extern.slf4j.Slf4j;import netty.websocket.resource.ResourceProcessor;
+import io.netty.channel.Channel;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+
+@WebSocketEndpoint("/ws/home")
+@Slf4j
+public class WsHomeResourceProcessor implements ResourceProcessor<String> {
+    @Override
+    public void handle(Channel client, String msg) {
+        log.debug("client[{}] ---> processor:{}", client.id(), msg);
+        sendText(client, "ack:" + msg);
+    }
+
+    @Override
+    public void sendText(Channel client, String text) {
+        log.debug("processor ---> client[{}]:{}", client.id(), text);
+        client.writeAndFlush(new TextWebSocketFrame(text));
+    }
+}
+```
+启动监听
 ```java
 import netty.websocket.resource.ResourceDispatcher;
 import netty.websocket.server.WebSocketNettyServer;
@@ -35,6 +58,23 @@ public class WebSocketServerBootstrap {
         WebSocketNettyServer.createServer(6680, resourceDispatcher).start();
     }
 }
+```
+接口访问
+```javascript
+var ws = new WebSocket("ws://127.0.0.1:6680/ws/home")
+
+ws.onmessage = function(msg) {
+    console.log("--->rev:" + msg.data)
+}
+ws.send("I'm client 001!")
+```
+输出打印
+```shell script
+---server---
+#server: client[abcdef] ---> processor:I'm client 001!
+
+---client---
+#client: --->rev:ack I'm client 001!
 ```
 ```
 websocket通道的建立过程包含由HTTP协议消息切换为WebSocket协议消息过程，
